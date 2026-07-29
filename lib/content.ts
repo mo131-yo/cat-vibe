@@ -26,6 +26,19 @@ export const COPY_LINK = "Холбоос хуулах";
 export const COPIED = "Хуулагдлаа!";
 export const PREVIEW_NOTE = "Найз чинь ингэж харна";
 
+/* ---------- Нэг хүн рүү илгээх ---------- */
+
+export const SEND_DIRECT = "Нэг хүн рүү илгээх";
+export const MESSENGER_BTN = "Messenger-ээр илгээх";
+export const FRIEND_PLACEHOLDER = "@messenger-ийн нэр";
+export const SEND_BTN = "Илгээх";
+export const RECENT = "Сүүлд илгээсэн";
+export const BAD_USERNAME = "Нэр буруу байна. Жишээ: @bat.dorj";
+export const PASTE_HINT =
+  "Холбоос хуулагдлаа — чат нээгдэхэд наагаад илгээгээрэй.";
+export const USERNAME_NOTE =
+  "Найз чинь Messenger дээрээ хэрэглэгчийн нэр тохируулсан байх шаардлагатай.";
+
 /* ---------- OG / metadata ---------- */
 
 export const OG_HINT = "Дарж хариулаарай →";

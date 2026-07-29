@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { SendToFriend } from "@/components/send-to-friend";
 import { COPIED, COPY_LINK } from "@/lib/content";
 
 /**
@@ -10,20 +11,10 @@ import { COPIED, COPY_LINK } from "@/lib/content";
  * дотор `navigator`-ыг уншвал сервер дээр унана. `useSyncExternalStore` нь
  * серверийн утгыг тусад нь өгдөг тул хоёуланг нь шийднэ.
  */
-const NEVER_CHANGES = () => () => {};
-
 function useCanShare(): boolean {
   return useSyncExternalStore(
-    NEVER_CHANGES,
+    () => () => {},
     () => typeof navigator !== "undefined" && !!navigator.share,
-    () => false,
-  );
-}
-
-function useIsCoarsePointer(): boolean {
-  return useSyncExternalStore(
-    NEVER_CHANGES,
-    () => window.matchMedia("(pointer: coarse)").matches,
     () => false,
   );
 }
@@ -32,18 +23,10 @@ type Target = {
   id: string;
   label: string;
   href: (url: string, text: string) => string;
-  /** Зөвхөн апп суусан утсан дээр нээгддэг */
-  mobileOnly?: boolean;
 };
 
+/** Messenger энд байхгүй — тэр нь `SendToFriend` блок руу бүрэн шилжсэн. */
 const TARGETS: Target[] = [
-  {
-    id: "messenger",
-    label: "Messenger",
-    // fb-messenger:// схем нь зөвхөн апп суусан төхөөрөмж дээр ажиллана
-    href: (url) => `fb-messenger://share/?link=${encodeURIComponent(url)}`,
-    mobileOnly: true,
-  },
   {
     id: "telegram",
     label: "Telegram",
@@ -66,7 +49,6 @@ const TARGETS: Target[] = [
 export function ShareRow({ url, text }: { url: string; text: string }) {
   const [copied, setCopied] = useState(false);
   const canShare = useCanShare();
-  const isMobile = useIsCoarsePointer();
 
   useEffect(() => {
     if (!copied) return;
@@ -83,10 +65,11 @@ export function ShareRow({ url, text }: { url: string; text: string }) {
     }
   };
 
-  const visible = TARGETS.filter((t) => !t.mobileOnly || isMobile);
-
   return (
     <div className="flex flex-col gap-3">
+      {/* Нэг хүн рүү шууд илгээх — хамгийн түгээмэл хэрэглээ тул дээр нь */}
+      <SendToFriend url={url} />
+
       {/* Холбоос — гараар ч хуулж болохоор ил харагдана */}
       <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-1.5">
         <input
@@ -116,7 +99,7 @@ export function ShareRow({ url, text }: { url: string; text: string }) {
           </button>
         ) : null}
 
-        {visible.map((target) => (
+        {TARGETS.map((target) => (
           <a
             key={target.id}
             href={target.href(url, text)}
