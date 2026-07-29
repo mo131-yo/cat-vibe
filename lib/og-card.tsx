@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { OG_HINT } from "@/lib/content";
-import type { CatVariant } from "@/lib/store";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_ALT = "Тамхи татаж буй муур асууж байна";
@@ -209,7 +208,7 @@ function OgCat() {
   );
 }
 
-export async function renderOgCard() {
+export async function renderOgCard({ question }: { question: string }) {
   return new ImageResponse(
     (
       <div
@@ -246,7 +245,7 @@ export async function renderOgCard() {
               letterSpacing: "-0.02em",
             }}
           >
-            {OG_TITLE}
+            {question}
           </div>
           <div
             style={{

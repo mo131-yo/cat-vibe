@@ -12,9 +12,6 @@
   /* Ширээний гадарга — муур цагаанаараа тодрохын тулд бараан өнгөтэй. */
   --table: #2b2721;
   --table-edge: #4a443a;
-  /* Даллаж буй муурын дэр. */
-  --cushion: #4a3d35;
-  --cushion-edge: #6b584c;
   /* Тамхи татах нэг мөчлөгийн үргэлжлэл — бүх утааны анимэйшн үүнд уягдана. */
   --smoke-cycle: 7s;
 }
@@ -29,8 +26,6 @@
   --color-fur: var(--fur);
   --color-fur-dark: var(--fur-dark);
   --color-table: var(--table);
-  --color-cushion: var(--cushion);
-  --color-cushion-edge: var(--cushion-edge);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -110,17 +105,6 @@ body {
 
   .glow-pulse {
     animation: glow-pulse 4s ease-in-out infinite;
-  }
-
-  /* ---------- Даллаж буй муур ---------- */
-
-  /* Мөрний уг дээрх цэгээс даллана. `transform-box: view-box` + пиксель
-     координат ашиглаж байгаа шалтгаан: `.smoke-arm`-тай ижил арга — SVG-ийн
-     viewBox-ийн координатын систем дэх тогтмол цэгээс тойрно. */
-  .paw-wave {
-    transform-box: view-box;
-    transform-origin: 175px 140px;
-    animation: paw-wave 1.4s ease-in-out infinite;
   }
 }
 
@@ -242,16 +226,6 @@ body {
   }
 }
 
-@keyframes paw-wave {
-  0%,
-  100% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(18deg);
-  }
-}
-
 @keyframes glow-pulse {
   0%,
   100% {
@@ -278,10 +252,5 @@ body {
      (Бөөмсийн суурь `opacity: 0` тул анимэйшн зогсоход өөрөө нуугдана.) */
   .smoke-arm {
     transform: translate(6px, 34px) !important;
-  }
-
-  /* Сарвуу дунд байрлалдаа тогтвортой зогсоно — мэндэлж буй мэт хэвээр. */
-  .paw-wave {
-    transform: rotate(4deg) !important;
   }
 }

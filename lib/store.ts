@@ -1,12 +1,9 @@
 import { Redis } from "@upstash/redis";
 import { FOLLOWUP, QUESTION } from "@/lib/content";
 
-export type CatVariant = "smoking" | "waving";
-
 export type SiteConfig = {
   question: string;
   followUp: string;
-  activeCat: CatVariant;
 };
 
 const KEY = "rauchen:config";
@@ -15,7 +12,6 @@ export const MAX_LEN = 60;
 const DEFAULTS: SiteConfig = {
   question: QUESTION,
   followUp: FOLLOWUP,
-  activeCat: "smoking",
 };
 
 /**
@@ -32,10 +28,6 @@ const redis = hasRedis ? Redis.fromEnv() : null;
 
 let memoryConfig: SiteConfig = { ...DEFAULTS };
 
-function isCatVariant(value: unknown): value is CatVariant {
-  return value === "smoking" || value === "waving";
-}
-
 function sanitize(raw: Partial<SiteConfig> | null | undefined): SiteConfig {
   if (!raw) return { ...DEFAULTS };
   return {
@@ -45,7 +37,6 @@ function sanitize(raw: Partial<SiteConfig> | null | undefined): SiteConfig {
     followUp: typeof raw.followUp === "string" && raw.followUp.trim()
       ? raw.followUp.slice(0, MAX_LEN)
       : DEFAULTS.followUp,
-    activeCat: isCatVariant(raw.activeCat) ? raw.activeCat : DEFAULTS.activeCat,
   };
 }
 
