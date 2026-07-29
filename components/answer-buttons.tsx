@@ -1,18 +1,11 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { NO, YES } from "@/lib/content";
+import { NO, TAUNTS, YES } from "@/lib/content";
 
 const MIN_JUMP = 60;
 
-/** Шоололтыг prop-оор авна — асуулт бүр өөрийн өнгө аястай. */
-export function AnswerButtons({
-  onYes,
-  taunts,
-}: {
-  onYes: () => void;
-  taunts: string[];
-}) {
+export function AnswerButtons({ onYes }: { onYes: () => void }) {
   const arenaRef = useRef<HTMLDivElement>(null);
   const noRef = useRef<HTMLButtonElement>(null);
   const [dodges, setDodges] = useState(0);
@@ -50,10 +43,7 @@ export function AnswerButtons({
 
   const yesScale = Math.min(1 + dodges * 0.14, 2.2);
   const noScale = Math.max(1 - dodges * 0.08, 0.55);
-  const taunt =
-    dodges > 0 && taunts.length
-      ? taunts[Math.min(dodges - 1, taunts.length - 1)]
-      : null;
+  const taunt = dodges > 0 ? TAUNTS[Math.min(dodges - 1, TAUNTS.length - 1)] : null;
 
   return (
     <div className="flex h-full w-full flex-col">

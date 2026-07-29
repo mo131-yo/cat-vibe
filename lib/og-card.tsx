@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { OG_HINT } from "@/lib/content";
-import { DEFAULT_PALETTE, type Palette } from "@/lib/palettes";
+import type { CatVariant } from "@/lib/store";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_ALT = "Тамхи татаж буй муур асууж байна";
@@ -37,11 +37,11 @@ async function loadFonts() {
  *
  * Дүр: Bongo Cat — @StrayRogue / @DitzyFlama; SVG: codepen.io/abeatrize/pen/LJqYey
  */
-function OgCat({ palette }: { palette: Palette }) {
+function OgCat() {
   const INK = "#14141c";
-  const FUR = palette.fur;
-  const ACCENT = palette.accent;
-  const ACCENT_HOT = palette.accentHot;
+  const FUR = "#f4f1ea";
+  const ACCENT = "#ff8a3d";
+  const ACCENT_HOT = "#ffd08a";
 
   const eye = (transform: string) => (
     <g transform={transform}>
@@ -209,22 +209,7 @@ function OgCat({ palette }: { palette: Palette }) {
   );
 }
 
-/** Hex → `rgba(r,g,b,a)`. Satori нь `#rrggbbaa`-г найдвартай уншдаггүй. */
-function rgba(hex: string, alpha: number): string {
-  const value = hex.replace("#", "");
-  const r = parseInt(value.slice(0, 2), 16);
-  const g = parseInt(value.slice(2, 4), 16);
-  const b = parseInt(value.slice(4, 6), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-export async function renderOgCard({
-  question,
-  palette = DEFAULT_PALETTE,
-}: {
-  question: string;
-  palette?: Palette;
-}) {
+export async function renderOgCard() {
   return new ImageResponse(
     (
       <div
@@ -237,15 +222,13 @@ export async function renderOgCard({
           gap: 24,
           padding: "0 56px 0 32px",
           backgroundColor: "#0b0b10",
-          backgroundImage: `radial-gradient(circle at 30% 62%, ${rgba(
-            palette.accent,
-            0.3,
-          )}, ${rgba(palette.accent, 0)} 45%)`,
+          backgroundImage:
+            "radial-gradient(circle at 30% 62%, rgba(255,138,61,0.30), rgba(255,138,61,0) 45%)",
           fontFamily: "Noto Sans",
           color: "#f4f1ea",
         }}
       >
-        <OgCat palette={palette} />
+        <OgCat />
 
         <div
           style={{
@@ -257,14 +240,13 @@ export async function renderOgCard({
         >
           <div
             style={{
-              // Урт асуулт зурагнаас халихгүйн тулд үсгийн тоогоор багасгана
-              fontSize: question.length > 34 ? 52 : question.length > 22 ? 62 : 74,
+              fontSize: 74,
               fontWeight: 700,
               lineHeight: 1.12,
               letterSpacing: "-0.02em",
             }}
           >
-            {question}
+            {OG_TITLE}
           </div>
           <div
             style={{
@@ -279,7 +261,7 @@ export async function renderOgCard({
                 width: 44,
                 height: 5,
                 borderRadius: 999,
-                backgroundColor: palette.accent,
+                backgroundColor: "#ff8a3d",
                 flexShrink: 0,
               }}
             />

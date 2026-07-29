@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/content";
+import { OG_DESCRIPTION, OG_TITLE } from "@/lib/content";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,21 +22,20 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  // Карт бүр өөрийн асуултаар нь дарж бичнэ — `/c/[data]/page.tsx` харна уу
-  title: { default: SITE_NAME, template: "%s" },
-  description: SITE_DESCRIPTION,
+  title: OG_TITLE,
+  description: OG_DESCRIPTION,
   openGraph: {
     type: "website",
     locale: "mn_MN",
     url: "/",
-    siteName: SITE_NAME,
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
+    siteName: OG_TITLE,
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
   },
 };
 
