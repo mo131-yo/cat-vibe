@@ -1,26 +1,287 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0b10;
+  --foreground: #f4f1ea;
+  --ink: #14141c;
+  --ember: #ff8a3d;
+  --ember-hot: #ffd08a;
+  --smoke: #9aa3b2;
+  --fur: #b9b3a6;
+  --fur-dark: #857f73;
+  /* Ширээний гадарга — муур цагаанаараа тодрохын тулд бараан өнгөтэй. */
+  --table: #2b2721;
+  --table-edge: #4a443a;
+  /* Тамхи татах нэг мөчлөгийн үргэлжлэл — бүх утааны анимэйшн үүнд уягдана. */
+  --smoke-cycle: 7s;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ember: var(--ember);
+  --color-ember-hot: var(--ember-hot);
+  --color-smoke: var(--smoke);
+  --color-fur: var(--fur);
+  --color-fur-dark: var(--fur-dark);
+  --color-table: var(--table);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overscroll-behavior: none;
+}
+
+/* Эдгээрийг `components` давхаргад байрлуулах ёстой. Давхаргагүй CSS нь
+   Tailwind-ийн `utilities` давхаргаас давамгайлдаг тул `.rise-in` доторх
+   `animation` shorthand нь `[animation-delay:80ms]`-ийг дарж орхих байсан. */
+@layer components {
+  /* ---------- Яриа бөмбөлөг ---------- */
+
+  /* Асуулт солигдох бүрд `key` шинэчлэгдэж дахин тоглоно. */
+  .bubble-in {
+    animation: bubble-in 420ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+    transform-origin: 50% 100%;
+  }
+
+  /* ---------- Муурны анимэйшн ---------- */
+
+  .cat-blink,
+  .cat-ember,
+  .plume-p,
+  .wisp-p {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .cat-blink {
+    animation: blink 5s ease-in-out infinite;
+  }
+
+  /* ── Тамхи татах мөчлөг ──
+     Гар ам руу өргөгдөж → уушиглаж → буурч → утаа үлээнэ.
+     Бүх анимэйшн ижил үргэлжлэлтэй тул мөчлөг синхрон явна. */
+
+  .smoke-arm {
+    /* Мөрний уг дээр эргэнэ. Гарын бүлэг ширээнээс өмнө зурагддаг тул
+       уг нь ширээний ард нуугдаж, тасарсан мэт харагдахгүй. */
+    transform-box: view-box;
+    transform-origin: 545px 262px;
+    animation: arm-smoke var(--smoke-cycle) ease-in-out infinite;
+  }
+
+  .cat-ember {
+    animation: ember-inhale var(--smoke-cycle) ease-in-out infinite;
+    filter: drop-shadow(0 0 6px var(--ember));
+  }
+
+  /* Утааны багана зөвхөн «үлээх» үе шатанд нээгдэнэ. */
+  .exhale {
+    opacity: 0;
+    animation: plume-gate var(--smoke-cycle) linear infinite;
+  }
+
+  /* Бөөмс тус бүр сөрөг сааталтай — замын дагуу жигд тархаж,
+     аль ч агшинд тасралтгүй мор үүсгэнэ. */
+  .plume-p {
+    opacity: 0;
+    animation: plume 4s linear infinite;
+  }
+
+  .wisp-p {
+    opacity: 0;
+    animation: wisp 3s linear infinite;
+  }
+
+  /* ---------- UI анимэйшн ---------- */
+
+  .taunt-in {
+    animation: taunt-in 400ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  }
+
+  .burst-particle {
+    animation: burst 1.1s cubic-bezier(0.15, 0.75, 0.35, 1) both;
+  }
+
+  .rise-in {
+    animation: rise-in 500ms cubic-bezier(0.2, 0.8, 0.25, 1) both;
+  }
+
+  .glow-pulse {
+    animation: glow-pulse 4s ease-in-out infinite;
+  }
+}
+
+/* ---------- Keyframes ---------- */
+
+/* Нүд нээлттэй үедээ бүтэн, анивчихдаа хавчина. */
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.08);
+  }
+}
+
+/* 0–10% өргөх · 10–26% уушиглах · 26–36% буулгах · 36–100% амрах */
+@keyframes arm-smoke {
+  0%,
+  100% {
+    transform: translate(6px, 34px);
+  }
+  10%,
+  26% {
+    /* Баруун нүд (474–494, 195–214)-ийг халхлахгүйн тулд сарвуу түүнээс доогуур. */
+    transform: translate(-73px, 26px);
+  }
+  36% {
+    transform: translate(6px, 34px);
+  }
+}
+
+/* Уушиглах агшинд гал тодорч томорно. */
+@keyframes ember-inhale {
+  0%,
+  8%,
+  32%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.9);
+  }
+  14%,
+  24% {
+    opacity: 1;
+    transform: scale(1.55);
+  }
+}
+
+/* Утаа 42–74%-д л гарна — гар буусны дараа. */
+@keyframes plume-gate {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  47%,
+  66% {
+    opacity: 1;
+  }
+  78%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* S-муруйгаар мурийж өргөсөн бүдгэрнэ — эгц дээш биш. */
+@keyframes plume {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  12% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.34;
+    transform: translate(-30px, -72px) scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-6px, -150px) scale(2.8);
+  }
+}
+
+/* Тамхины үзүүрийн нимгэн утаа — байнга. */
+@keyframes wisp {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  18% {
+    opacity: 0.42;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(12px, -54px) scale(1.8);
+  }
+}
+
+@keyframes taunt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes burst {
+  from {
+    opacity: 1;
+    transform: rotate(var(--angle, 0deg)) translateY(0) scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: rotate(var(--angle, 0deg))
+      translateY(calc(-1 * var(--dist, 120px))) scale(1.1);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* ---------- Хөдөлгөөн багасгах горим ---------- */
+/* Давхаргагүй + !important тул бүхнээс давамгайлна. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Гар амрах байрлалдаа зогсоно, утаа бүрэн унтарна.
+     (Бөөмсийн суурь `opacity: 0` тул анимэйшн зогсоход өөрөө нуугдана.) */
+  .smoke-arm {
+    transform: translate(6px, 34px) !important;
+  }
 }
